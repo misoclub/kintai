@@ -372,7 +372,7 @@ $(function() {
         const subject = "【勤怠連絡】" + myname + " " + dayText + " " + typeText + " " + timeText;
 
         // 本文を生成。
-        const body = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "このメールは【勤怠さん】から送信されました。\nhttps://misoclub.github.io/send_mail/");
+        const body = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "このメールは【勤怠さん】から送信されました。\nhttps://misoclub.github.io/kintai/");
 
         // この辺からモーダル用のでっち上げテキスト生成。
         // モーダル用の署名なしテキストを生成する。
