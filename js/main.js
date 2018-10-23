@@ -124,9 +124,9 @@ function OnN() {
             alert("\u3057\u3087\u3046\u304c\u306a\u3044\u306b\u3083\u3042\u30fb\u30fb");
         } else if (n == 100) {
             alert("\u3044\u3044\u3088\u3002");
-        } else if (n == 200) {
+        } else if (n == 160) {
             alert("\u306a\u3044\u3068\u3046\u3055\u3093\u304c\u4e00\u676f\u5962\u3063\u3066\u3042\u3052\u308b\u3002\n\u307f\u3093\u306a\u306b\u306f\u5185\u7dd2\u3060\u3087\u2606");
-        } else if (n > 160 && n % 5 == 0) {
+        } else if (n > 180 && n % 5 == 0) {
             alert("\u306b\u3083\u301c\u3093\uff08\u3082\u3046\u306a\u306b\u3082\u8d77\u3053\u308a\u307e\u305b\u3093\uff09");
         }
     });
