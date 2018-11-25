@@ -482,6 +482,14 @@ $(function() {
         signOut();
     });
 
+    $('#signin').click(function() {
+        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+            alert("すでにSign Inしています");
+            return;
+        }
+        signIn();
+    });
+
     $('#cacheclear').click(function() {
         alert("保存してあるデータを削除します");
         store.clearAll();
