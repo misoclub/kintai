@@ -481,7 +481,7 @@ $(function() {
             var nowdate = new Date();
             var day = dateToStr24HPad0DayOfWeek(nowdate, 'YYYY年MM月DD日(WW)');
             var today = day == fullDayText ? 1 : 0;
-            window.location.href = "./success.html?iiwake=" + iiwakeText + "&today=" + today;
+            window.location.href = "./success.html?iiwake=" + typeText + "&today=" + today;
 
             // ボタンを押せなくする。
             $('#submitbtn').text("送信済");
