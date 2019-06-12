@@ -5,6 +5,69 @@ bSended = false;
 iiwakeChange = false;
 timeChange = false;
 
+function getParam(name, url)
+{
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function InitializeSuccess()
+{
+    // 日付が今日か未来かで更に出し分けたい
+
+    var iiwake = getParam("iiwake");
+    var today = getParam("today") == 1;
+    var text = "";
+    switch(iiwake)
+    {
+        case "遅刻":
+        text = today ? "あせらずお気をつけてお越し下さい😉" : "お気をつけてお越し下さい🏢";
+        break;
+
+        case "早退":
+        text = today ? "ちゃっちゃと仕事を終わらせて帰りましょう！👋" : "予定時刻になったら帰りましょう！🏃";
+        break;
+
+        case "有給取得":
+        text = today ? "良い休日を！ゆっくり休んでください🛏" : "よい休日になりますように🙏";
+        break;
+
+        case "代休取得":
+        text = today ? "働いた分、今日はゆっくり休みましょう！🍺" : "働いた分、当日はゆっくり休みましょう！🍺";
+        break;
+
+        case "欠勤":
+        text = today ? "おつかれさまです。ゆっくり休んでください🦊" : "おつかれさまです。ゆっくり休んでください🦁";
+        break;
+
+        case "直行":
+        text = today ? "気をつけていってらっしゃいませ！" : "気をつけていってらっしゃいませ！";
+        break;
+
+        case "直帰":
+        text = today ? "気をつけていってらっしゃいませ！" : "気をつけていってらっしゃいませ！";
+        break;
+
+        case "自宅作業":
+        text = today ? "家での作業おつかれさまです！！🏠" : "家での作業がんばりましょう・・！";
+        break;
+
+        case "休日勤務":
+        text = today ? "休日勤務おつかれさまです！" : "休日勤務がんばりましょう・・！💪";
+        break;
+
+        default:
+        break;
+    }
+
+    $(".success_message").text(text);
+}
+
 async function signIn() {
     try {
         await gapi.auth2.getAuthInstance().signIn();
@@ -413,7 +476,12 @@ $(function() {
         $('#sendbutton').on('click', function() {
             sendEmail(mailto, mailcc, mailbcc, subject, body);
             modal.modal('hide');
-            alert("多分メールを送信しました！");
+            // alert("多分メールを送信しました！");
+
+            var nowdate = new Date();
+            var day = dateToStr24HPad0DayOfWeek(nowdate, 'YYYY年MM月DD日(WW)');
+            var today = day == fullDayText ? 1 : 0;
+            window.location.href = "./success.html?iiwake=" + iiwakeText + "&today=" + today;
 
             // ボタンを押せなくする。
             $('#submitbtn').text("送信済");
@@ -480,6 +548,14 @@ $(function() {
     $('#signout').click(function() {
         alert("google認証を解除します");
         signOut();
+    });
+
+    $('#signin').click(function() {
+        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+            alert("すでにSign Inしています");
+            return;
+        }
+        signIn();
     });
 
     $('#cacheclear').click(function() {
