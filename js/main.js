@@ -477,7 +477,7 @@ $(function() {
             var minutesText = $('#mail-form [name=minutes_2] option:selected').text();
             var hourText2 = $('#mail-form [name=hour_3] option:selected').text();
             var minutesText2 = $('#mail-form [name=minutes_3] option:selected').text();
-            timeText = hourText2 + minutesText2 + "終了";
+            timeText = hourText2.replace("時", ":") + minutesText2.replace("分", "") + "終了";
             addtionalText = "\n■ 実作業時間\n　　"+hourText+minutesText+" 〜" + hourText2 + minutesText2 + "\n";
             typeTextTmp = "リモートワーク";
         }
