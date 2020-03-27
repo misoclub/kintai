@@ -605,6 +605,11 @@ $(function() {
             } else {
                 $('#iiwake').val();
             }
+
+            // 送信ボタン押せるかを切り替えたときにチェック。
+            var enable = checkSendButton();
+            $('#submitbtn').prop('disabled', !enable);
+            enable ? $('#errortext').hide() : $('#errortext').show();
         }
         if (!timeChange) {
             if (iiwakeData) {
