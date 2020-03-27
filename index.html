@@ -39,7 +39,7 @@
 
   </script>
     <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="#"><img src="images/icon.png" width="32" height="32" class="d-inline-block align-center" alt="">  勤怠さん β</a>
+        <a class="navbar-brand" href="./"><img src="images/icon.png" width="32" height="32" class="d-inline-block align-center" alt="">  勤怠さん</a>
 
 <div class="dropdown">
   <button class="btn btn-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -139,6 +139,8 @@
                             <option>直行</option>
                             <option>直帰</option>
                             <option>自宅作業</option>
+                            <option>リモートワーク 開始</option>
+                            <option>リモートワーク 終了</option>
                             <option>休日勤務</option>
                         </select>
                     </div>
@@ -175,6 +177,96 @@
                         </select>
                         　
                         <select class="form-control" name="minutes">
+                            <option value="1">00分</option>
+                            <option value="2">10分</option>
+                            <option value="3">20分</option>
+                            <option value="4">30分</option>
+                            <option value="5">40分</option>
+                            <option value="6">50分</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-5 timehide_remote" style="display: none">
+                    <h6 class="text-secondary remote_start">開始予定時刻</h6>
+                    <h6 class="text-secondary remote_end">開始時刻</h6>
+                </div>
+                <div class="col timehide_remote" style="display: none">
+                    <h6 class="text-secondary remote_start">終了予定時刻</h6>
+                    <h6 class="text-secondary remote_end">終了時刻</h6>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-5 timehide_remote" style="display: none">
+                    <div class="form-group" style="display:inline-flex">
+                        <select class="form-control" name="hour_2">
+                            <option value="1">00時</option>
+                            <option value="2">01時</option>
+                            <option value="2">02時</option>
+                            <option value="3">03時</option>
+                            <option value="4">04時</option>
+                            <option value="5">05時</option>
+                            <option value="6">06時</option>
+                            <option value="7">07時</option>
+                            <option value="8">08時</option>
+                            <option value="9">09時</option>
+                            <option value="10">10時</option>
+                            <option value="11" selected>11時</option>
+                            <option value="12">12時</option>
+                            <option value="13">13時</option>
+                            <option value="14">14時</option>
+                            <option value="15">15時</option>
+                            <option value="16">16時</option>
+                            <option value="17">17時</option>
+                            <option value="18">18時</option>
+                            <option value="19">19時</option>
+                            <option value="20">20時</option>
+                            <option value="21">21時</option>
+                            <option value="22">22時</option>
+                            <option value="23">23時</option>
+                        </select>
+                        　
+                        <select class="form-control" name="minutes_2">
+                            <option value="1">00分</option>
+                            <option value="2">10分</option>
+                            <option value="3">20分</option>
+                            <option value="4">30分</option>
+                            <option value="5">40分</option>
+                            <option value="6">50分</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- <div class="w-100"></div> -->
+                <!-- <div class="w-100"></div> -->
+                <div class="col timehide_remote" style="display: none">
+                    <div class="form-group" style="display:inline-flex">
+                        <select class="form-control" name="hour_3">
+                            <option value="1">00時</option>
+                            <option value="2">01時</option>
+                            <option value="2">02時</option>
+                            <option value="3">03時</option>
+                            <option value="4">04時</option>
+                            <option value="5">05時</option>
+                            <option value="6">06時</option>
+                            <option value="7">07時</option>
+                            <option value="8">08時</option>
+                            <option value="9">09時</option>
+                            <option value="10">10時</option>
+                            <option value="11">11時</option>
+                            <option value="12">12時</option>
+                            <option value="13">13時</option>
+                            <option value="14">14時</option>
+                            <option value="15">15時</option>
+                            <option value="16">16時</option>
+                            <option value="17">17時</option>
+                            <option value="18">18時</option>
+                            <option value="19" selected>19時</option>
+                            <option value="20">20時</option>
+                            <option value="21">21時</option>
+                            <option value="22">22時</option>
+                            <option value="23">23時</option>
+                        </select>
+                        　
+                        <select class="form-control" name="minutes_3">
                             <option value="1">00分</option>
                             <option value="2">10分</option>
                             <option value="3">20分</option>

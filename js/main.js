@@ -61,6 +61,14 @@ function InitializeSuccess()
         text = today ? "休日勤務おつかれさまです！" : "休日勤務がんばりましょう・・！💪";
         break;
 
+        case "リモートワーク 開始":
+        text = today ? "リモート作業頑張りましょう！" : "当日はリモート作業がんばりましょう💪";
+        break;
+
+        case "リモートワーク 終了":
+        text = today ? "リモート作業お疲れ様でした！" : "リモート作業おつかれさまです。";
+        break;
+
         default:
         break;
     }
@@ -121,7 +129,7 @@ async function sendEmail(sendto, sendcc, sendbcc, subject, body) {
     }
 }
 
-function makeBody(yourname, name, day, type, iiwake, signature) {
+function makeBody(yourname, name, day, type, iiwake, signature, addtionalText) {
     // 言い訳は地味にインデントがあるのでその対応。
     iiwake = iiwake.split("\n").join("\n　　");
 
@@ -135,7 +143,7 @@ function makeBody(yourname, name, day, type, iiwake, signature) {
 ​
 ■ 状況
 　　${type}
-​
+​${addtionalText}
 ■ 理由
 　　${iiwake}
  
@@ -231,6 +239,14 @@ function load() {
         $('#mail-form [name=hour] option[value="' + iiwakeData["hour"] + '"]').prop('selected', true);
         // 分をセット。
         $('#mail-form [name=minutes] option[value="' + iiwakeData["minutes"] + '"]').prop('selected', true);
+        // 時をセット。
+        $('#mail-form [name=hour_2] option[value="' + iiwakeData["hour_2"] + '"]').prop('selected', true);
+        // 分をセット。
+        $('#mail-form [name=minutes_2] option[value="' + iiwakeData["minutes_2"] + '"]').prop('selected', true);
+        // 時をセット。
+        $('#mail-form [name=hour_3] option[value="' + iiwakeData["hour_3"] + '"]').prop('selected', true);
+        // 分をセット。
+        $('#mail-form [name=minutes_3] option[value="' + iiwakeData["minutes_3"] + '"]').prop('selected', true);
     }
 
     var mailto = saveData["mailto"];
@@ -272,7 +288,7 @@ function load() {
     }
 }
 
-function save(mailto, mailcc, mailbcc, yourname, name, iiwake, type, hour, minutes) {
+function save(mailto, mailcc, mailbcc, yourname, name, iiwake, type, hour, minutes, hour_2, minutes_2, hour_3, minutes_3) {
     var saveData = {};
     saveData["mailto"] = mailto;
     saveData["mailcc"] = mailcc;
@@ -286,6 +302,10 @@ function save(mailto, mailcc, mailbcc, yourname, name, iiwake, type, hour, minut
     iiwakeData["iiwake"] = iiwake;
     iiwakeData["hour"] = hour;
     iiwakeData["minutes"] = minutes;
+    iiwakeData["hour_2"] = hour_2;
+    iiwakeData["minutes_2"] = minutes_2;
+    iiwakeData["hour_3"] = hour_3;
+    iiwakeData["minutes_3"] = minutes_3;
     store.set(type, iiwakeData);
 }
 
@@ -364,6 +384,18 @@ $(function() {
     $('#mail-form [name=minutes]').change(function() {
         timeChange = true;
     });
+    $('#mail-form [name=hour_2]').change(function() {
+        timeChange = true;
+    });
+    $('#mail-form [name=minutes_2]').change(function() {
+        timeChange = true;
+    });
+    $('#mail-form [name=hour_3]').change(function() {
+        timeChange = true;
+    });
+    $('#mail-form [name=minutes_3]').change(function() {
+        timeChange = true;
+    });
 
     // 確認ボタン。
     $('#submitbtn').click(function() {
@@ -415,6 +447,7 @@ $(function() {
         // 状態。
         var typeText = $('#mail-form [name=type] option:selected').text();
         var typeTextBody = typeText;
+        var typeTextTmp = typeText;
         // 年も含めた日付。
         var fullDayText = $('#targetDate').val();
         // 年を削った日付。
@@ -423,23 +456,41 @@ $(function() {
         var iiwakeText = $('#iiwake').val();
         // 予定時間。存在しない場合もある。
         var timeText = "";
+        // 追加テキスト。
+        var addtionalText = "";
         // 特定の条件のときは時間のテキストを生成する。
         if (typeText == "遅刻" || typeText == "早退") {
             var hourText = $('#mail-form [name=hour] option:selected').text();
             var minutesText = $('#mail-form [name=minutes] option:selected').text();
             timeText = hourText + minutesText;
             typeTextBody += " (" + timeText + "予定)";
+        } else if(typeText == "リモートワーク 開始") {
+            var hourText = $('#mail-form [name=hour_2] option:selected').text();
+            var minutesText = $('#mail-form [name=minutes_2] option:selected').text();
+            var hourText2 = $('#mail-form [name=hour_3] option:selected').text();
+            var minutesText2 = $('#mail-form [name=minutes_3] option:selected').text();
+            timeText = hourText.replace("時", ":") + minutesText.replace("分", "") + "-" + hourText2.replace("時", ":") + minutesText2.replace("分", "");
+            addtionalText = "\n■ 予定作業時間\n　　"+ hourText + minutesText + " 〜" + hourText2 + minutesText2 + "\n";
+            typeTextTmp = "リモートワーク";
+        } else if(typeText == "リモートワーク 終了") {
+            var hourText = $('#mail-form [name=hour_2] option:selected').text();
+            var minutesText = $('#mail-form [name=minutes_2] option:selected').text();
+            var hourText2 = $('#mail-form [name=hour_3] option:selected').text();
+            var minutesText2 = $('#mail-form [name=minutes_3] option:selected').text();
+            timeText = hourText2 + minutesText2 + "終了";
+            addtionalText = "\n■ 実作業時間\n　　"+hourText+minutesText+" 〜" + hourText2 + minutesText2 + "\n";
+            typeTextTmp = "リモートワーク";
         }
 
         // 件名生成。
-        const subject = "【勤怠連絡】" + myname + " " + dayText + " " + typeText + " " + timeText;
+        const subject = "【勤怠連絡】" + myname + " " + dayText + " " + typeTextTmp + " " + timeText;
 
         // 本文を生成。
-        const body = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "このメールは【勤怠さん】から送信されました。\nhttps://misoclub.github.io/kintai/");
+        const body = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "このメールは【勤怠さん】から送信されました。\nhttps://misoclub.github.io/kintai/", addtionalText);
 
         // この辺からモーダル用のでっち上げテキスト生成。
         // モーダル用の署名なしテキストを生成する。
-        const modalbody = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "");
+        const modalbody = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "", addtionalText);
 
         var modalText = "☆宛先☆\n";
         for (var mail of mailtoArray) {
@@ -467,9 +518,13 @@ $(function() {
 
         var hour = $('#mail-form [name=hour] option:selected').val();
         var minutes = $('#mail-form [name=minutes] option:selected').val();
+        var hour_2 = $('#mail-form [name=hour_2] option:selected').val();
+        var minutes_2 = $('#mail-form [name=minutes_2] option:selected').val();
+        var hour_3 = $('#mail-form [name=hour_3] option:selected').val();
+        var minutes_3 = $('#mail-form [name=minutes_3] option:selected').val();
 
         // 今回使用した情報を保存。
-        save(mailto, mailcc, mailbcc, yourname, myname, iiwakeText, typeText, hour, minutes);
+        save(mailto, mailcc, mailbcc, yourname, myname, iiwakeText, typeText, hour, minutes, hour_2, minutes_2, hour_3, minutes_3);
 
         // メール送信。
         $('#sendbutton').off('click');
@@ -499,9 +554,44 @@ $(function() {
             $('.timehide').each(function() {
                 $(this).show();
             });
+            $('.timehide_remote').each(function() {
+                $(this).hide();
+            });
+        } else if(type == "リモートワーク 開始")
+        {
+            $('.timehide').each(function() {
+                $(this).hide();
+            });
+            $('.timehide_remote').each(function() {
+                $(this).show();
+            });
+            $('.remote_start').each(function() {
+                $(this).show();
+            });
+            $('.remote_end').each(function() {
+                $(this).hide();
+            });
+        } else if(type == "リモートワーク 終了")
+        {
+            $('.timehide').each(function() {
+                $(this).hide();
+            });
+            $('.timehide_remote').each(function() {
+                $(this).show();
+            });
+
+            $('.remote_start').each(function() {
+                $(this).hide();
+            });
+            $('.remote_end').each(function() {
+                $(this).show();
+            });
         } else {
             // 遅刻と早退は追加で時間の選択が必要
             $('.timehide').each(function() {
+                $(this).hide();
+            });
+            $('.timehide_remote').each(function() {
                 $(this).hide();
             });
         }
@@ -522,6 +612,14 @@ $(function() {
                 $('#mail-form [name=hour] option[value="' + iiwakeData["hour"] + '"]').prop('selected', true);
                 // 分をセット。
                 $('#mail-form [name=minutes] option[value="' + iiwakeData["minutes"] + '"]').prop('selected', true);
+                // 時をセット。
+                $('#mail-form [name=hour_2] option[value="' + iiwakeData["hour_2"] + '"]').prop('selected', true);
+                // 分をセット。
+                $('#mail-form [name=minutes_2] option[value="' + iiwakeData["minutes_2"] + '"]').prop('selected', true);
+                // 時をセット。
+                $('#mail-form [name=hour_3] option[value="' + iiwakeData["hour_3"] + '"]').prop('selected', true);
+                // 分をセット。
+                $('#mail-form [name=minutes_3] option[value="' + iiwakeData["minutes_3"] + '"]').prop('selected', true);
             }
         }
     });
