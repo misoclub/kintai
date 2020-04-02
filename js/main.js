@@ -129,7 +129,7 @@ async function sendEmail(sendto, sendcc, sendbcc, subject, body) {
     }
 }
 
-function makeBody(yourname, name, day, type, iiwake, signature, addtionalText) {
+function makeBody(yourname, name, day, type, iiwake, signature, addtionalText, riyuu) {
     // 言い訳は地味にインデントがあるのでその対応。
     iiwake = iiwake.split("\n").join("\n　　");
 
@@ -144,7 +144,7 @@ function makeBody(yourname, name, day, type, iiwake, signature, addtionalText) {
 ■ 状況
 　　${type}
 ​${addtionalText}
-■ 理由
+■ ${riyuu}
 　　${iiwake}
  
 
@@ -458,6 +458,7 @@ $(function() {
         var timeText = "";
         // 追加テキスト。
         var addtionalText = "";
+        var riyuu = "理由";
         // 特定の条件のときは時間のテキストを生成する。
         if (typeText == "遅刻" || typeText == "早退") {
             var hourText = $('#mail-form [name=hour] option:selected').text();
@@ -472,6 +473,7 @@ $(function() {
             timeText = hourText.replace("時", ":") + minutesText.replace("分", "") + "-" + hourText2.replace("時", ":") + minutesText2.replace("分", "");
             addtionalText = "\n■ 予定作業時間\n　　"+ hourText + minutesText + " 〜" + hourText2 + minutesText2 + "\n";
             typeTextTmp = "リモートワーク";
+            riyuu = "作業内容";
         } else if(typeText == "リモートワーク 終了") {
             var hourText = $('#mail-form [name=hour_2] option:selected').text();
             var minutesText = $('#mail-form [name=minutes_2] option:selected').text();
@@ -480,17 +482,18 @@ $(function() {
             timeText = hourText2.replace("時", ":") + minutesText2.replace("分", "") + "終了";
             addtionalText = "\n■ 実作業時間\n　　"+hourText+minutesText+" 〜" + hourText2 + minutesText2 + "\n";
             typeTextTmp = "リモートワーク";
+            riyuu = "作業内容";
         }
 
         // 件名生成。
         const subject = "【勤怠連絡】" + myname + " " + dayText + " " + typeTextTmp + " " + timeText;
 
         // 本文を生成。
-        const body = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "このメールは【勤怠さん】から送信されました。\nhttps://misoclub.github.io/kintai/", addtionalText);
+        const body = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "このメールは【勤怠さん】から送信されました。\nhttps://misoclub.github.io/kintai/", addtionalText, riyuu);
 
         // この辺からモーダル用のでっち上げテキスト生成。
         // モーダル用の署名なしテキストを生成する。
-        const modalbody = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "", addtionalText);
+        const modalbody = makeBody(yourname, myname, fullDayText, typeTextBody, iiwakeText, "", addtionalText, riyuu);
 
         var modalText = "☆宛先☆\n";
         for (var mail of mailtoArray) {
@@ -571,6 +574,12 @@ $(function() {
             $('.remote_end').each(function() {
                 $(this).hide();
             });
+            $('.naiyo').each(function() {
+                $(this).show();
+            });
+            $('.riyu').each(function() {
+                $(this).hide();
+            });
         } else if(type == "リモートワーク 終了")
         {
             $('.timehide').each(function() {
@@ -586,6 +595,12 @@ $(function() {
             $('.remote_end').each(function() {
                 $(this).show();
             });
+            $('.naiyo').each(function() {
+                $(this).show();
+            });
+            $('.riyu').each(function() {
+                $(this).hide();
+            });
         } else {
             // 遅刻と早退は追加で時間の選択が必要
             $('.timehide').each(function() {
@@ -593,6 +608,12 @@ $(function() {
             });
             $('.timehide_remote').each(function() {
                 $(this).hide();
+            });
+            $('.naiyo').each(function() {
+                $(this).hide();
+            });
+            $('.riyu').each(function() {
+                $(this).show();
             });
         }
 
