@@ -232,7 +232,6 @@ function load() {
     {
         type = saveData["type"];
     }
-    alert(type);
 
     $('#myname').val(saveData["name"]);
     $('#yourname').val(saveData["yourname"]);
