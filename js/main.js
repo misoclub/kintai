@@ -226,10 +226,18 @@ function load() {
         return;
     }
 
+
     var type = $('#mail-form [name=type] option:selected').text();
+    if(saveData["type"] && saveData["type"] != "")
+    {
+        type = saveData["type"];
+    }
+    alert(type);
 
     $('#myname').val(saveData["name"]);
     $('#yourname').val(saveData["yourname"]);
+    // 前回送信したタイプを取得。
+    $('#typeselect').val(type);
 
     // いいわけが存在するときのみ値を入れる。
     var iiwakeData = store.get(type);
@@ -295,6 +303,7 @@ function save(mailto, mailcc, mailbcc, yourname, name, iiwake, type, hour, minut
     saveData["mailbcc"] = mailbcc;
     saveData["name"] = name;
     saveData["yourname"] = yourname;
+    saveData["type"] = type;
     store.set('user_data', saveData);
 
     // いいわけ専用の保存データ。
