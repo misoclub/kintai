@@ -238,6 +238,9 @@ function load() {
     // 前回送信したタイプを取得。
     $('#typeselect').val(type);
 
+    // タイプ変更に伴うレイアウト変更。
+    OnChangeType();
+
     // いいわけが存在するときのみ値を入れる。
     var iiwakeData = store.get(type);
     if (iiwakeData) {
@@ -333,6 +336,107 @@ function initialize() {
     var enable = checkSendButton();
     $('#submitbtn').prop('disabled', !enable);
     enable ? $('#errortext').hide() : $('#errortext').show();
+}
+
+function OnChangeType()
+{
+        var type = $('#typeselect').val();
+        if (type == "遅刻" || type == "早退") {
+            // 遅刻と早退は追加で時間の選択が必要
+            $('.timehide').each(function() {
+                $(this).show();
+            });
+            $('.timehide_remote').each(function() {
+                $(this).hide();
+            });
+        } else if(type == "リモートワーク 開始")
+        {
+            $('.timehide').each(function() {
+                $(this).hide();
+            });
+            $('.timehide_remote').each(function() {
+                $(this).show();
+            });
+            $('.remote_start').each(function() {
+                $(this).show();
+            });
+            $('.remote_end').each(function() {
+                $(this).hide();
+            });
+            $('.naiyo').each(function() {
+                $(this).show();
+            });
+            $('.riyu').each(function() {
+                $(this).hide();
+            });
+        } else if(type == "リモートワーク 終了")
+        {
+            $('.timehide').each(function() {
+                $(this).hide();
+            });
+            $('.timehide_remote').each(function() {
+                $(this).show();
+            });
+
+            $('.remote_start').each(function() {
+                $(this).hide();
+            });
+            $('.remote_end').each(function() {
+                $(this).show();
+            });
+            $('.naiyo').each(function() {
+                $(this).show();
+            });
+            $('.riyu').each(function() {
+                $(this).hide();
+            });
+        } else {
+            // 遅刻と早退は追加で時間の選択が必要
+            $('.timehide').each(function() {
+                $(this).hide();
+            });
+            $('.timehide_remote').each(function() {
+                $(this).hide();
+            });
+            $('.naiyo').each(function() {
+                $(this).hide();
+            });
+            $('.riyu').each(function() {
+                $(this).show();
+            });
+        }
+
+        // いいわけ専用。
+        var iiwakeData = store.get(type);
+        // いいわけを編集していないときに別の状況に切り替えたらその言い訳に切り替える。
+        if (!iiwakeChange) {
+            if (iiwakeData) {
+                $('#iiwake').val(iiwakeData["iiwake"]);
+            } else {
+                $('#iiwake').val();
+            }
+
+            // 送信ボタン押せるかを切り替えたときにチェック。
+            var enable = checkSendButton();
+            $('#submitbtn').prop('disabled', !enable);
+            enable ? $('#errortext').hide() : $('#errortext').show();
+        }
+        if (!timeChange) {
+            if (iiwakeData) {
+                // 時をセット。
+                $('#mail-form [name=hour] option[value="' + iiwakeData["hour"] + '"]').prop('selected', true);
+                // 分をセット。
+                $('#mail-form [name=minutes] option[value="' + iiwakeData["minutes"] + '"]').prop('selected', true);
+                // 時をセット。
+                $('#mail-form [name=hour_2] option[value="' + iiwakeData["hour_2"] + '"]').prop('selected', true);
+                // 分をセット。
+                $('#mail-form [name=minutes_2] option[value="' + iiwakeData["minutes_2"] + '"]').prop('selected', true);
+                // 時をセット。
+                $('#mail-form [name=hour_3] option[value="' + iiwakeData["hour_3"] + '"]').prop('selected', true);
+                // 分をセット。
+                $('#mail-form [name=minutes_3] option[value="' + iiwakeData["minutes_3"] + '"]').prop('selected', true);
+            }
+        }
 }
 
 function checkSendButton() {
@@ -559,103 +663,7 @@ $(function() {
     });
 
     $('#typeselect').change(function() {
-        var type = $(this).val();
-        if (type == "遅刻" || type == "早退") {
-            // 遅刻と早退は追加で時間の選択が必要
-            $('.timehide').each(function() {
-                $(this).show();
-            });
-            $('.timehide_remote').each(function() {
-                $(this).hide();
-            });
-        } else if(type == "リモートワーク 開始")
-        {
-            $('.timehide').each(function() {
-                $(this).hide();
-            });
-            $('.timehide_remote').each(function() {
-                $(this).show();
-            });
-            $('.remote_start').each(function() {
-                $(this).show();
-            });
-            $('.remote_end').each(function() {
-                $(this).hide();
-            });
-            $('.naiyo').each(function() {
-                $(this).show();
-            });
-            $('.riyu').each(function() {
-                $(this).hide();
-            });
-        } else if(type == "リモートワーク 終了")
-        {
-            $('.timehide').each(function() {
-                $(this).hide();
-            });
-            $('.timehide_remote').each(function() {
-                $(this).show();
-            });
-
-            $('.remote_start').each(function() {
-                $(this).hide();
-            });
-            $('.remote_end').each(function() {
-                $(this).show();
-            });
-            $('.naiyo').each(function() {
-                $(this).show();
-            });
-            $('.riyu').each(function() {
-                $(this).hide();
-            });
-        } else {
-            // 遅刻と早退は追加で時間の選択が必要
-            $('.timehide').each(function() {
-                $(this).hide();
-            });
-            $('.timehide_remote').each(function() {
-                $(this).hide();
-            });
-            $('.naiyo').each(function() {
-                $(this).hide();
-            });
-            $('.riyu').each(function() {
-                $(this).show();
-            });
-        }
-
-        // いいわけ専用。
-        var iiwakeData = store.get(type);
-        // いいわけを編集していないときに別の状況に切り替えたらその言い訳に切り替える。
-        if (!iiwakeChange) {
-            if (iiwakeData) {
-                $('#iiwake').val(iiwakeData["iiwake"]);
-            } else {
-                $('#iiwake').val();
-            }
-
-            // 送信ボタン押せるかを切り替えたときにチェック。
-            var enable = checkSendButton();
-            $('#submitbtn').prop('disabled', !enable);
-            enable ? $('#errortext').hide() : $('#errortext').show();
-        }
-        if (!timeChange) {
-            if (iiwakeData) {
-                // 時をセット。
-                $('#mail-form [name=hour] option[value="' + iiwakeData["hour"] + '"]').prop('selected', true);
-                // 分をセット。
-                $('#mail-form [name=minutes] option[value="' + iiwakeData["minutes"] + '"]').prop('selected', true);
-                // 時をセット。
-                $('#mail-form [name=hour_2] option[value="' + iiwakeData["hour_2"] + '"]').prop('selected', true);
-                // 分をセット。
-                $('#mail-form [name=minutes_2] option[value="' + iiwakeData["minutes_2"] + '"]').prop('selected', true);
-                // 時をセット。
-                $('#mail-form [name=hour_3] option[value="' + iiwakeData["hour_3"] + '"]').prop('selected', true);
-                // 分をセット。
-                $('#mail-form [name=minutes_3] option[value="' + iiwakeData["minutes_3"] + '"]').prop('selected', true);
-            }
-        }
+        OnChangeType();
     });
 
     // 宛先追加ボタン。
