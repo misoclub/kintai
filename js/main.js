@@ -25,6 +25,10 @@ function InitializeSuccess()
     var text = "";
     switch(iiwake)
     {
+        case "出社":
+        text = today ? "コロナに負けないで出社してすごい😉" : "病気に気をつけてね🏢";
+        break;
+
         case "遅刻":
         text = today ? "あせらずお気をつけてお越し下さい😉" : "お気をつけてお越し下さい🏢";
         break;
